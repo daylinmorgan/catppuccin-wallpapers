@@ -10,7 +10,7 @@ if git rev-parse --verify assets &>/dev/null; then
 	git checkout assets -q
 else
 	git checkout --orphan assets
-	git rm .gitignore
+	git rm -f .gitignore
 	find . -type f ! -name "*.png" -not -path '*/\.git*' | xargs git rm -rf
 fi
 
