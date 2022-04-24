@@ -14,26 +14,46 @@ StyledSvg = namedtuple("StyledSvg", ["svg_str", "attrib_str", "file_name"])
 
 
 class Svg:
+    """SVG to be modified"""
+
     def __init__(self, svg_path):
-        # self.svg_path = svg_path
         self.name = svg_path.name
         self.config = self._load_config(svg_path)
 
-        self._get_root(svg_path)
+        self.root = self._get_root(svg_path)
 
     def _load_config(self, svg_path):
+        """load config from toml file in src directory
+
+        Args:
+            svg_path (Path): path to the src directory (with base.svg and config.toml)
+        """
+
         with (svg_path / "config.toml").open("rb") as f:
             config = tomli.load(f)
 
         return config
 
     def _get_root(self, svg_path):
+        """_summary_
+
+        Args:
+            svg_path (Path): path to directory with base.svg
+
+        Returns:
+            ElementTree.Element: root element of svg
+        """
         tree = ET.parse(svg_path / "base.svg")
 
-        self.root = tree.getroot()
-        self.doc = [f"# {self.name.capitalize()}"]
+        return tree.getroot()
 
     def get_style_combos(self):
+        """generate a list of all style combinations
+
+        Returns:
+            StyledAttrib: namedtuple with attribute id, color key, and color value
+        """
+
         styles = {}
         for style in self.config["style"]:
 
@@ -51,8 +71,17 @@ class Svg:
 
         return styles
 
+        # """
+
     def update_svg(self, styled_combo):
-        """create a list of svg strings to turn into images"""
+        """update element with new styles
+
+        Args:
+            styled_combo (List[StyledAttrib]): list of styled attributes to apply to root svg
+
+        Returns:
+            StyledSvg: tuple with modified svg string, the identifying string, and file name
+        """
 
         file_name = self.config["file_prefix"]
         updated_root = self.root
@@ -76,6 +105,14 @@ class Svg:
 
 
 def progress(i, max, postText):
+    """simple progress bar
+
+    Args:
+        i (int): current progress
+        max (int): total progress
+        postText (str): text to display at the end of progress bar
+    """
+
     n_bar = 50  # size of progress bar
     j = i / max
     sys.stdout.write("\x1b[2K\r")
@@ -88,7 +125,18 @@ def progress(i, max, postText):
         sys.stdout.write("\x1b[2K\r")
 
 
-def modify_element(root, namespace, attrib, color) -> ET.Element:
+def modify_element(root, namespace, attrib, color):
+    """apply style to all elements matching xpath specification
+
+    Args:
+        root (ET.Element): root svg to search for elements
+        namespace (str): namespace taken from config (required)
+        attrib (Dict[str,str]): dictionary taken from config with xpath and style attribute
+        color (str): color hex code to apply to style string
+
+    Returns:
+        ET.Element: updated svg element with new style
+    """
 
     for e in root.findall(attrib["xpath"].format(namespace=namespace)):
         e.set("style", attrib["style"].format(color_value=color))
@@ -96,13 +144,18 @@ def modify_element(root, namespace, attrib, color) -> ET.Element:
     return root
 
 
-def svg2png(svg_str, dest_dir, verbose=False):
+def svg2png(svg_str, dest_file):
+    """convert svg string to png using inkscape
 
-    # TODO: make width and height optional config values
+    Args:
+        svg_str (str): modified svg
+        dest_file (Path): path to file to save png
+    """
+
     cmd = f"""
     inkscape \
         --export-type=png \
-        --export-filename={dest_dir} \
+        --export-filename={dest_file} \
         --export-width=3840 \
         --export-height=2160 \
         --pipe
@@ -114,6 +167,15 @@ def svg2png(svg_str, dest_dir, verbose=False):
 
 
 def make_fig_table(figures):
+    """generate an html table with a list of figures
+
+    Args:
+        figures (Dict[str,str]): dictionary of png id's and relative paths
+
+    Returns:
+        str: html table to append to markdown doc list
+    """
+
     cols = 3
     row = '<td align="center">{name}<img src="{url}"></td>'
     rows = [row.format(name=k, url=v) for k, v in figures.items()]
@@ -125,16 +187,28 @@ def make_fig_table(figures):
     table = "\n<table>\n{columns}\n</table>\n".format(columns="\n".join(columns))
     return table
 
+
 def make_dest_dirs(src):
+    """generate necessary directories
+
+    Args:
+        src (Path): path to base.svg and config.toml
+
+    Returns:
+        Tuple(Path,Path): png and markdown doc paths
+    """
+
     dest_dir = Path("pngs") / src.name
     dest_dir.mkdir(parents=True, exist_ok=True)
     doc_dir = Path("docs")
     doc_dir.mkdir(parents=True, exist_ok=True)
 
     return dest_dir, doc_dir
+
+
 def main():
     src = Path(sys.argv[1])
-    dest_dir,doc_dir = make_dest_dirs(src)
+    dest_dir, doc_dir = make_dest_dirs(src)
 
     svg = Svg(src)
 
