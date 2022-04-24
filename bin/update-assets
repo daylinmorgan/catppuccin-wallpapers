@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+if ! [[ $(git status -s | wc -l) -eq 0 ]]; then
+	echo 'you have unstaged files'
+	echo
+	exit 1
+fi
+
+if git rev-parse --verify assets &>/dev/null; then
+	git checkout assets -q
+else
+	git checkout --orphan assets
+	git rm .gitignore
+	find . -type f ! -name "*.png" -not -path '*/\.git*' | xargs git rm -rf
+fi
+
+if [[ $(git status -s | wc -l) -eq 0 ]]; then
+	echo 'nothing to change, returning to main'
+	echo
+	git checkout main
+	exit 0
+else
+	git add pngs
+	git commit -m "update assets $(date +%s)"
+fi
+
+if [[ $(git rev-list @{u}..@ --count) -eq 0 ]]; then
+	echo 'no changes returning to main'
+	git checkout main
+	exit 0
+fi
+
+echo
+echo "assets have been updated"
+echo
+echo "next push to origin:"
+echo "  git push origin assets"
+echo "and return to main:"
+echo "  git checkout main"
