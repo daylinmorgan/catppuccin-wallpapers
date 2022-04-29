@@ -214,6 +214,8 @@ def main():
 
     doc = [f"# {svg.name.capitalize()}"]
 
+    print(f"Generating assets for {svg.name.capitalize()}")
+
     styled_svgs = []
     for style, combos in svg.get_style_combos().items():
 

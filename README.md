@@ -68,6 +68,4 @@ Correctly setting the xpath may take some experimentation.
 ./generate-pngs.py src/cool-wallpaper
 ```
 
-If the results are satisfactory add a line to the `generate-assets` rule in the `Justfile`.
-
 Then run `just generate-assets update-assets`.
