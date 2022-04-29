@@ -26,9 +26,15 @@ Click on an image below to see all of it's pre-generated pngs.
 <img src='./src/cat/base.svg' width ="400">
 </a>
 </td>
+<td>
+<a href="./docs/caffeine.md">
+<img src='./src/caffeine/base.svg' width ="400">
+</a>
+</td>
 </tr>
 </table>
 
+You can find `.tar.gz`'s to download of all the pre-generated png's in the [releases](https://github.com/daylinmorgan/catppuccin-wallpapers/releases/).
 
 ## Setup
 
