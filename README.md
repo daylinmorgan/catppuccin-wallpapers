@@ -26,9 +26,16 @@ Click on an image below to see all of it's pre-generated pngs.
 <img src='./src/cat/base.svg' width ="400">
 </a>
 </td>
+</tr>
+<tr>
 <td>
 <a href="./docs/caffeine.md">
 <img src='./src/caffeine/base.svg' width ="400">
+</a>
+</td>
+<td>
+<a href="./docs/lines.md">
+<img src='./src/lines/base.svg' width ="400">
 </a>
 </td>
 </tr>
