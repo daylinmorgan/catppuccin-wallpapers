@@ -1,0 +1,52 @@
+namespace = "{http://www.w3.org/2000/svg}"
+file_prefix = "lines"
+
+[attribute.background]
+name = "bg-{color_key}"
+xpath = ".//{namespace}rect"
+style = "fill:{color_value};"
+
+[attribute.foreground]
+name = "fg-{color_key}"
+xpath = ".//{namespace}path"
+style = "fill:none;stroke:{color_value};stroke-width:0.1;stroke-linecap:round;"
+
+[[style]]
+name = "Dark on Light"
+[[style.attribute]]
+id = 'background'
+palette = 'light'
+[[style.attribute]]
+id = 'foreground'
+palette = 'dark'
+
+[[style]]
+name = "Light on Dark"
+[[style.attribute]]
+id = 'background'
+palette = 'dark'
+[[style.attribute]]
+id = 'foreground'
+palette = 'light'
+
+[palette]
+[palette.light]
+rosewater = "#F5E0DC"
+flamingo = "#F2CDCD"
+mauve = "#DDB6F2"
+pink = "#F5C2E7"
+maroon = "#E8A2AF"
+red = "#F28FAD"
+peach = "#F8BD96"
+yellow = "#FAE3B0"
+green = "#ABE9B3"
+teal = "#B5E8E0"
+blue = "#96CDFB"
+sky = "#89DCEB"
+lavender = "#C9CBFF"
+white = "#D9E0EE"
+
+
+[palette.dark]
+black2 = "#1E1E2E"
+black3 = "#302D41"
